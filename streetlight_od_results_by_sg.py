@@ -1,8 +1,5 @@
 import os
-
 import pandas as pd
-import psycopg2
-import pandas.io.sql as sqlio
 import sqlalchemy
 from sqlalchemy import text
 
@@ -14,7 +11,7 @@ def create_db_engine():
     driver = 'psycopg2'
     db_name = 'postgres'
     db_user = 'da_analytics'
-    db_password = os.environ['db_password']
+    db_password = os.environ['db_password'] # Use env variable
     db_host = '10.98.4.86'
     db_port = '5432'
 
@@ -85,3 +82,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# TODO: test appears in github
