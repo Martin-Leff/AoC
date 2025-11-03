@@ -7,6 +7,7 @@ pd.set_option('future.no_silent_downcasting', True)
 pd.set_option('display.max_columns', None)
 
 def create_db_engine():
+    # Set engine variables and create connection string
     dialect = 'postgresql'
     driver = 'psycopg2'
     db_name = 'postgres'
@@ -21,6 +22,7 @@ def create_db_engine():
     return eng
 
 def load_data(eng):
+    # Connect to database and save as dataframe
     with eng.connect() as connection:
         data = connection.execute(text('select * from us50.stl_od_signalgroup_maltest order by random() limit 10000'))
         df = pd.DataFrame(data)
@@ -28,25 +30,30 @@ def load_data(eng):
     return df
 
 def column_to_string(df, column_name, element, new_column):
+    # Generic string column split function
     df[new_column] = df[column_name].str.split('_').str[element]
 
 def get_origin(df):
+    # Get origin name from string
     column_to_string(df, 'o_name', 3, 'origin_name')
     column_to_string(df, 'o_name', 4, 'o_direction')
     df['origin'] = df['origin_name'] + '_' + df['o_direction']
     return
 
 def get_destination(df):
+    # Get destination name from string
     column_to_string(df, 'd_name', 3, 'destination_name')
     column_to_string(df, 'd_name', 4, 'd_direction')
     df['destination'] = df['destination_name'] + '_' + df['d_direction']
     return
 
 def reshape_array(df):
+    # Group by date range, day type (weekday, weekend, friday, etc), day part (time range)
     df_grouped = df.groupby(['data_period', 'daytype', 'daypart'])
 
     df_keys = df_grouped.groups.keys()
 
+    # Loop through each group and filter data
     for df_key in df_keys:
         df_key_list = list(df_key)
 
@@ -62,6 +69,7 @@ def reshape_array(df):
 
         df_group = pd.DataFrame(group_tuple, columns=['origin', 'destination', 'stl_volume'])
 
+        # Reshape into filtered data into an o-d matrix
         od_matrix = df_group.pivot_table(
             index='origin',
             columns='destination',
