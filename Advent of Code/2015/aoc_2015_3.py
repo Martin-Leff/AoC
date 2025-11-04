@@ -4,4 +4,3 @@ url = 'https://raw.githubusercontent.com/Martin-Leff/AoC/refs/heads/main/Advent%
 resp = requests.get(url)
 input_text = resp.text
 
-print(input_text)
