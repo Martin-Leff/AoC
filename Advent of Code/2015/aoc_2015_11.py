@@ -6,4 +6,3 @@ resp = requests.get(url)
 input_text = resp.text
 
 print(input_text)
-
