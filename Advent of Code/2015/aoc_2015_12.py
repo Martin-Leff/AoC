@@ -6,3 +6,10 @@ resp = requests.get(url)
 input_text = resp.text
 
 print(input_text)
+
+numbers = re.compile(r'-?\d+')
+result = list(map(int, numbers.findall(input_text)))
+print(result)
+total = sum(result)
+
+print(total)
