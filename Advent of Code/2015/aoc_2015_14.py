@@ -7,8 +7,6 @@ input_text = input_text.splitlines()
 
 # Part 1
 
-print(input_text)
-
 race_length = 2503
 reindeer_dict = {}
 reindeer_list = []
@@ -43,15 +41,41 @@ print('Part 1 Answer:', distance_max)
 # Part 2
 
 distance_dict = {}
+reindeer_tuple_list = []
+
+# for reindeer in reindeer_list:
+#     reindeer_dist = 0
+#     for second in range(race_length):
+#         cycle_location = second % reindeer_dict[reindeer]['cycle']
+#         if cycle_location < reindeer_dict[reindeer]['move']:
+#             reindeer_dist += reindeer_dict[reindeer]['speed']
+#         reindeer_tuple = (second, {reindeer:reindeer_dist})
+#         reindeer_tuple_list.append(reindeer_tuple)
+
+reindeer_dist_dict = {}
+reindeer_points_dict = {}
 
 for reindeer in reindeer_list:
-    reindeer_dist = 0
-    for second in range(race_length):
-        cycle_location = (second) % reindeer_dict[reindeer]['cycle']
+    reindeer_dist_dict[reindeer] = 0
+    reindeer_points_dict[reindeer] = 0
+
+for second in range(race_length):
+
+    max_second_dist = 0
+
+    for reindeer in reindeer_list:
+        reindeer_dist = reindeer_dist_dict[reindeer]
+        cycle_location = second % reindeer_dict[reindeer]['cycle']
         if cycle_location < reindeer_dict[reindeer]['move']:
             reindeer_dist += reindeer_dict[reindeer]['speed']
-        distance_dict.update({second: reindeer_dist})
+        reindeer_dist_dict[reindeer] = reindeer_dist
+        if reindeer_dist > max_second_dist:
+            max_second_dist = reindeer_dist
 
-print(distance_dict)
+    for reindeer in reindeer_list:
+        if reindeer_dist_dict[reindeer] == max_second_dist:
+            reindeer_points_dict[reindeer] += 1
 
-# print('Part 2 Answer:', distance_max)
+winner = max(reindeer_points_dict.values())
+
+print('Part 2 Answer:', winner)
