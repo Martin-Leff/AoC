@@ -5,30 +5,10 @@ url = 'https://raw.githubusercontent.com/Martin-Leff/AoC/refs/heads/main/Advent%
 
 resp = requests.get(url)
 input_text = resp.text
-# input_text = input_text.splitlines()
 
 # Part 1
 
 min_val = int(input_text)
-
-# max_houses = 10000000
-# house_total_max = 0
-#
-# for i in range(700000, max_houses):
-#     house_num = i + 1
-#     house_total = 0
-#     for j in range(house_num):
-#         elf_num = j + 1
-#         if house_num % elf_num == 0:
-#             house_total += elf_num * 10
-#
-#     if (house_total > house_total_max) or (house_total > 25000000):
-#         print(house_num, house_total)
-#         house_total_max = house_total
-#
-#     if house_total > min_val:
-#         print(house_num, house_total)
-#         break
 
 def calc_presents(house_num):
     f = set(reduce(list.__add__, ([i, house_num // i] for i in range(1, int(house_num ** 0.5) + 1) if house_num % i == 0)))
