@@ -7,9 +7,6 @@ url = 'https://raw.githubusercontent.com/Martin-Leff/AoC/refs/heads/main/Advent%
 
 resp = requests.get(url)
 input_text = resp.text
-# if resp.status_code != 200:
-#     input_text = '''Hit Points: 58\nDamage: 9'''
-
 input_text = input_text.splitlines()
 
 # Part 1
