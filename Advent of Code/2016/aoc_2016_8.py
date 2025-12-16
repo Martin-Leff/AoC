@@ -1,3 +1,4 @@
+import numpy as np
 import requests
 import regex as re
 
@@ -8,61 +9,44 @@ input_text = input_text.splitlines()
 
 # Part 1
 
-abba_count = 0
+width = 50
+height = 6
 
-def abba_checkstring(i, string):
-    return (string[i] == string[i + 3]) and (string[i + 1] == string[i + 2]) and (string[i] != string[i + 1])
+screen = np.zeros(shape=(height, width))
 
-for string in input_text:
-    abba_check = True
-    abba_found = False
-    hypernet_abba = False
-    for i in range(len(string) - 3):
-        if abba_checkstring(i, string) and abba_check:
-            abba_found = True
-        elif string[i] == '[':
-            abba_check = False
-        elif string[i] == ']':
-            abba_check = True
-        elif abba_checkstring(i, string) and not abba_check:
-            hypernet_abba = True
-    if abba_found and not hypernet_abba:
-        abba_count += 1
+for line in input_text:
+    if line.startswith('rect'):
+        x, y = line.split()[1].split('x')
+        y, x = int(x), int(y)
+        screen[:x, :y] = 1
+    elif line.startswith('rotate row'):
+        row = int(line.split()[2].split('=')[1])
+        offset = int(line.split()[4])
+        screen[row] = np.roll(screen[row], offset)
+    else:
+        column = int(line.split()[2].split('=')[1])
+        offset = int(line.split()[4])
+        screen[:, column] = np.roll(screen[:, column], offset)
 
-print('Part 1 Answer:', abba_count)
+total_count = sum(sum(screen))
+
+print('Part 1 Answer:', total_count)
 
 # Part 2
 
-# input_text = ['adncdhtushtvtfcbez[rvaycmplefdvbrchc]vtviiplkpfhsyhwzz[pdpnsseaizogzvtkcq]piorguaivfpummlo']
-# print(input_text)
+# line_end = True
 
-ssl_count = 0
+print_quest = False
 
-def ssl_check(i, string):
-    return (string[i] == string[i + 2]) and (string[i] != string[i + 1])
+if print_quest:
+    for row in screen:
+        for char in row:
+            if char:
+                print('#', end='')
+            else:
+                print(' ', end='')
+        print('\n')
 
-for string in input_text:
-    aba_check = True
-    aba_found = False
-    for i in range(len(string) - 2):
-        char1 = string[i]
-        if ssl_check(i, string) and aba_check:
-            char2 = string[i + 1]
-            string_check = string[:i] + string[i + 3:]
-            bab = char2 + char1 + char2
+password = 'upojflbcez'
 
-            matches = re.findall(r"\[.*?\]", string)
-            for match in matches:
-                if bab in match:
-                    ssl_count += 1
-                    aba_found = True
-        elif string[i] == '[':
-            aba_check = False
-        elif string[i] == ']':
-            aba_check = True
-        if aba_found:
-            # print(string)
-            break
-
-
-print('Part 2 Answer:', ssl_count)
+print('Part 2 Answer:', password)
