@@ -1,8 +1,6 @@
 import requests
 import hashlib
-import re
-from hashlib import md5
-from sys import exit, setrecursionlimit
+from sys import setrecursionlimit
 setrecursionlimit(10000)
 
 url = 'https://raw.githubusercontent.com/Martin-Leff/AoC/refs/heads/main/Advent%20of%20Code/2016/Inputs/aoc_2016_14_input.txt'
@@ -62,8 +60,6 @@ i = 0
 key_list = []
 
 limit = 64
-
-# input_text = 'abc'
 
 hashed_dict = {}
 
