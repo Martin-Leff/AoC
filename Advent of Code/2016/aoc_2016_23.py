@@ -238,5 +238,4 @@ while True:
     if i >= len(command_list):
         break
 
-
 print('Part 2 Answer:', a)
