@@ -1,44 +1,47 @@
 import requests
+from itertools import combinations
 
 url = 'https://raw.githubusercontent.com/Martin-Leff/AoC/refs/heads/main/Advent%20of%20Code/2017/Inputs/aoc_2017_2_input.txt'
 resp = requests.get(url)
 input_text = resp.text
+input_text = input_text.splitlines()
 
 # Part 1
 
-i = 0
 total = 0
+spreadsheet = []
 
-for i in range(len(input_text)):
-    char = input_text[i]
-    if i < len(input_text) - 1:
-        compare = input_text[i + 1]
-    else:
-        compare = input_text[0]
+for line in input_text:
+    line = line.split('\t')
+    new_line = []
+    for char in line:
+        number = int(char)
+        new_line.append(number)
+    spreadsheet.append(new_line)
 
-    if char == compare:
-        total += int(char)
+for row in spreadsheet:
+    max_num = max(row)
+    min_num = min(row)
+    diff = max_num - min_num
+    total += diff
 
 print('Part 1 Answer:', total)
 
-# Part 2
-
 total = 0
 
-len_text = len(input_text)
+for row in spreadsheet:
+    unfound = True
+    combos = combinations(row, 2)
 
-half_length = len_text / 2
-
-for i in range(len_text):
-    char = input_text[i]
-    compare_index = int(i + half_length)
-
-    if compare_index >= len_text:
-        compare_index = compare_index - len_text
-
-    compare = input_text[compare_index]
-
-    if char == compare:
-        total += int(char)
+    while unfound:
+        for combo in combos:
+            modulo_1 = combo[0] % combo[1]
+            modulo_2 = combo[1] % combo[0]
+            if modulo_1 == 0:
+                total += combo[0] / combo[1]
+                unfound = False
+            if modulo_2 == 0:
+                total += combo[1] / combo[0]
+                unfound = False
 
 print('Part 2 Answer:', total)
