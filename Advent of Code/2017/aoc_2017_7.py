@@ -1,9 +1,7 @@
 import collections
 
 import requests
-import operator
 import networkx as nx
-import matplotlib.pyplot as plt
 
 url = 'https://raw.githubusercontent.com/Martin-Leff/AoC/refs/heads/main/Advent%20of%20Code/2017/Inputs/aoc_2017_7_input.txt'
 resp = requests.get(url)
@@ -46,36 +44,43 @@ print('Part 1 Answer:', bottom)
 G = nx.DiGraph()
 
 for line in input_text:
+    name = line.split()[0]
+
+    G.add_node(name, weight=int(line.split()[1].strip('()')))
+
     if '->' in line:
-        base = line.split('->')[0]
-        base_weight = int(base.split('(')[1].strip(') '))
-        base = base.split('(')[0].strip(' ')
-        children_list = line.split('->')[1].strip(' ').split(',')
-        children_list = [x.strip() for x in children_list]
-        G.add_node(base, weight=base_weight)
-        for child in children_list:
-            G.add_edge(base, child)
-    else:
-        node_weight = int(line.split('(')[1].strip(') '))
-        node = line.split('(')[0].strip(' ')
-        G.add_node(node, weight=node_weight)
+        children = [n.strip() for n in line.split('->')[1].split(',')]
+
+        for child in children:
+            G.add_edge(name, child)
 
 ordered = list(nx.topological_sort(G))
 
 weights = {}
 
+answer_weight = 0
+
 for node in reversed(ordered):
     total = G.nodes[node]['weight']
-    print(node, total)
-    count = collections.Counter(weights[child] for child in G[node])
+
+    counts = collections.Counter(weights[child] for child in G[node])
     unbal = None
+    val = 0
 
     for child in G[node]:
-        if len(count) > 1 and count[weights[child]] == 1:
+        if len(counts) > 1 and counts[weights[child]] == 1:
             unbal = child
             break
 
         val = weights[child]
-        total += val
+        total += weights[child]
 
+    if unbal:
+        diff = weights[unbal] - val
+        answer_weight = G.nodes[unbal]['weight'] - diff
+        break
+
+    weights[node] = total
+
+print('Part 2 Answer:', answer_weight)
 
